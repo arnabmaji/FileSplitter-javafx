@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="io.github.arnabmaji19.filesplitter.controller.PrimaryController"
@@ -9,19 +9,19 @@
           alignment="CENTER" hgap="20">
 
     <Button
-        GridPane.rowIndex="0"
-        GridPane.columnIndex="0"
-        prefHeight="50"
-        prefWidth="100"
-        text="Split"
-        onAction="#viewFileSplitter"/>
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="0"
+            prefHeight="50"
+            prefWidth="100"
+            text="Split"
+            onAction="#viewFileSplitter"/>
 
     <Button
-        GridPane.rowIndex="0"
-        GridPane.columnIndex="1"
-        prefHeight="50"
-        prefWidth="100"
-        text="Merge"
-        onAction="#viewFileMerger"/>
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="1"
+            prefHeight="50"
+            prefWidth="100"
+            text="Merge"
+            onAction="#viewFileMerger"/>
 
 </GridPane>

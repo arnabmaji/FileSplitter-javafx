@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0"
           prefWidth="600.0" style="-fx-padding: 8px;" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="io.github.arnabmaji19.filesplitter.controller.FileSplitterController"
@@ -22,11 +23,13 @@
         </font>
     </Label>
     <TextField editable="false" prefHeight="26.0" prefWidth="329.0" text="No File Chosen" GridPane.rowIndex="1"
-        fx:id="filePathTextField"/>
+               fx:id="filePathTextField"/>
     <Button alignment="CENTER_RIGHT" mnemonicParsing="false" text="Choose" GridPane.columnIndex="1"
-            GridPane.halignment="RIGHT" GridPane.rowIndex="1" onAction="#chooseFile"/>
-    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2">
+            GridPane.halignment="RIGHT" GridPane.rowIndex="1" onAction="#chooseFile" fx:id="fileChooserButton"/>
+    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2" GridPane.columnSpan="2">
         <Spinner prefHeight="26.0" prefWidth="85.0" min="2" max="20" fx:id="maxPartitionsSpinner"/>
-        <Button mnemonicParsing="false" text="Generate" onAction="#generatePartitions"/>
+        <Button mnemonicParsing="false" text="Generate" onAction="#generatePartitions" fx:id="generateButton"/>
+        <ProgressBar prefWidth="200.0" fx:id="progressBar" visible="false"/>
+        <Text text="Please Wait..." fx:id="waitPromptText" visible="false"/>
     </HBox>
 </GridPane>

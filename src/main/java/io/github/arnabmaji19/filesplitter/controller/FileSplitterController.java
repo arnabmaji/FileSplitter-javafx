@@ -1,16 +1,24 @@
 package io.github.arnabmaji19.filesplitter.controller;
 
+import io.github.arnabmaji19.filesplitter.util.FileSplitter;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 
 public class FileSplitterController {
+    @FXML
+    private Text waitPromptText;
+    @FXML
+    private ProgressBar progressBar;
+    @FXML
+    private Button fileChooserButton;
+    @FXML
+    private Button generateButton;
     @FXML
     private TextField filePathTextField;
     @FXML
@@ -46,6 +54,48 @@ public class FileSplitterController {
             errorAlert.showAndWait();
             return;
         }
-        int maxPartitions = maxPartitionsSpinner.getValue();  // get number of partitions
+        int partitions = maxPartitionsSpinner.getValue();  // get number of partitions
+        // disable all buttons and spinner
+        toggleScreenControls(true);
+
+        // start FileSplitter
+        var fileSplitter = new FileSplitter(file, partitions);
+        fileSplitter.addProgressListener(
+                (completedPartitions, maxPartitions) -> {
+
+                    Runnable runnable;  // create runnable to run on fx application thread
+
+                    if (completedPartitions == maxPartitions) {  // if it is completed
+                        runnable = () -> {
+                            // show complete dialog
+                            var alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.getButtonTypes().setAll(ButtonType.OK);
+                            alert.setHeaderText("Successful!");
+                            // show this alert on fx application thread
+                            alert.showAndWait();
+                            toggleScreenControls(false);
+                            // set selected file to null
+                            file = null;
+                            // update text on selected file path text field
+                            filePathTextField.setText("No File Chosen");
+                        };
+                    } else {
+                        // update progress bar
+                        runnable = () -> progressBar.setProgress(
+                                completedPartitions / (double) maxPartitions
+                        );
+                    }
+                    Platform.runLater(runnable);  // run the runnable on fx application thread
+                }
+        );
+        fileSplitter.start();
+    }
+
+    private void toggleScreenControls(boolean show) {
+        generateButton.setDisable(show);
+        fileChooserButton.setDisable(show);
+        maxPartitionsSpinner.setDisable(show);
+        progressBar.setVisible(show);
+        waitPromptText.setVisible(show);
     }
 }

@@ -2,7 +2,7 @@ package io.github.arnabmaji19.filesplitter.util;
 
 import java.io.*;
 
-public class FileSplitter extends Thread {
+public class FileSplitter {
 
     private static final String PARTITION_EXTENSION = ".part";
     private static final String META_FILE_WARNING = "!!!DO NOT ALTER THIS FILE!!!";
@@ -26,8 +26,7 @@ public class FileSplitter extends Thread {
         this.lastPartitionSize = eachPartitionSize + (file.length() % maxPartitions);  // add left out bytes for last partition
     }
 
-    @Override
-    public void run() {
+    public void split() {
         var outputDirectoryFile = new File(outputDirectoryPath);
         if (!outputDirectoryFile.mkdir())
             throw new OutputDirectoryException();  // if it fails to create output directory

@@ -2,7 +2,7 @@ package io.github.arnabmaji19.filesplitter.util;
 
 import java.io.*;
 
-public class FileMerger extends Thread {
+public class FileMerger {
 
     private static final int FILE_NAME_LINE_NUMBER = 2;
     private static final int PARTITIONS_NAME_START_NUMBER = 3;
@@ -18,8 +18,7 @@ public class FileMerger extends Thread {
                 .substring(0, metaFile.getAbsolutePath().lastIndexOf('/')) + "/";
     }
 
-    @Override
-    public void run() {
+    public void merge() {
         // get partitions from meta file
         joinPartitions();
         if (onSuccessListener != null) onSuccessListener.onSuccess();  // send success message
@@ -32,7 +31,7 @@ public class FileMerger extends Thread {
                 var metaFileStream = new BufferedReader(new FileReader(metaFile));
                 var destinationFileStream = new BufferedOutputStream(
                         new FileOutputStream(destinationFile)
-                );
+                )
         ) {
             var line = "";
             var lineCount = 0;
@@ -69,7 +68,7 @@ public class FileMerger extends Thread {
             }
             destinationFile.renameTo(new File(workingDirectory + outputFileName));
         } catch (IOException e) {
-            var metaFileException = new MetaFileException();
+            var metaFileException = new MetaFileException("Problems with Meta File.");
             metaFileException.initCause(e);
             throw metaFileException;
         }

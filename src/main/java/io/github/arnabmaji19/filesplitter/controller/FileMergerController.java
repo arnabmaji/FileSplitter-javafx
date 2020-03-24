@@ -49,7 +49,7 @@ public class FileMergerController {
 
         if (metaFile == null) {  // if user has not selected any file
             // show error dialog
-            Alert errorAlert = new Alert(  // create error dialog
+            var errorAlert = new Alert(  // create error dialog
                     Alert.AlertType.ERROR
             );
             errorAlert.setHeaderText("No File Chosen!");
@@ -72,16 +72,33 @@ public class FileMergerController {
                 metaFile = null;
                 filePathTextField.setText("No File Chosen!");
                 // show a confirmation alert
-                Alert successAlert = new Alert(
+                var successAlert = new Alert(
                         Alert.AlertType.INFORMATION
                 );
-                successAlert.setHeaderText("Success!");
+                successAlert.setHeaderText("Successful!");
                 successAlert.getButtonTypes().setAll(ButtonType.OK);
                 successAlert.showAndWait();
             });
         });
-        // start FileMerger thread
-        fileMerger.start();
+
+        // merge files in background thread
+        new Thread(() -> {
+            try {
+                // start FileMerger
+                fileMerger.merge();
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    toggleScreenControls(false);  // toggle screen controls
+                    // create error alert to show StackTrace
+                    var errorAlert = new Alert(
+                            Alert.AlertType.ERROR
+                    );
+                    errorAlert.setHeaderText("Something Unexpected Occurred!");
+                    errorAlert.setContentText(e.getMessage());  // display exception
+                    errorAlert.showAndWait();
+                });
+            }
+        }).start();
     }
 
     private void toggleScreenControls(boolean toggle) {

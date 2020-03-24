@@ -88,14 +88,31 @@ public class FileSplitterController {
                     Platform.runLater(runnable);  // run the runnable on fx application thread
                 }
         );
-        fileSplitter.start();
+
+        // run FileSplitter in Background Thread
+        new Thread(() -> {
+            try {
+                fileSplitter.split();  // start FileSplitter
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    toggleScreenControls(false);  // toggle screen controls
+                    // create an error alert
+                    var errorAlert = new Alert(
+                            Alert.AlertType.ERROR
+                    );
+                    errorAlert.setContentText(e.getMessage());
+                    errorAlert.setHeaderText("Something Unexpected Occurred!");
+                    errorAlert.showAndWait();
+                });
+            }
+        });
     }
 
-    private void toggleScreenControls(boolean show) {
-        generateButton.setDisable(show);
-        fileChooserButton.setDisable(show);
-        maxPartitionsSpinner.setDisable(show);
-        progressBar.setVisible(show);
-        waitPromptText.setVisible(show);
+    private void toggleScreenControls(boolean toggle) {
+        generateButton.setDisable(toggle);
+        fileChooserButton.setDisable(toggle);
+        maxPartitionsSpinner.setDisable(toggle);
+        progressBar.setVisible(toggle);
+        waitPromptText.setVisible(toggle);
     }
 }

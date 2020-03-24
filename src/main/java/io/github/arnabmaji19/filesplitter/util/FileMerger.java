@@ -10,7 +10,7 @@ public class FileMerger extends Thread {
     private File metaFile;
     private String workingDirectory;
     private String outputFileName;
-    private ProgressListener progressListener;
+    private OnSuccessListener onSuccessListener;
 
     public FileMerger(File metaFile) {
         this.metaFile = metaFile;
@@ -22,11 +22,11 @@ public class FileMerger extends Thread {
     public void run() {
         // get partitions from meta file
         joinPartitions();
+        if (onSuccessListener != null) onSuccessListener.onSuccess();  // send success message
     }
 
     private void joinPartitions() {
         int completed = 0;
-        updateProgress(completed);
         var destinationFile = new File(workingDirectory + outputFileName);
         try (
                 var metaFileStream = new BufferedReader(new FileReader(metaFile));
@@ -60,7 +60,6 @@ public class FileMerger extends Thread {
                                 partitionSize
                         );
                         ripper.rip();
-                        updateProgress(++completed);  // update progress
                     } catch (IOException e) {
                         var partitionException = new PartitionException("Can not read " + partitionName);
                         partitionException.initCause(e);
@@ -76,15 +75,12 @@ public class FileMerger extends Thread {
         }
     }
 
-    public void addProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public void addOnSuccessListener(OnSuccessListener onSuccessListener) {
+        this.onSuccessListener = onSuccessListener;
     }
 
-    private void updateProgress(int joined) {
-        if (progressListener != null) progressListener.onProgressChanged(joined);
+    public interface OnSuccessListener {
+        void onSuccess();
     }
 
-    public interface ProgressListener {
-        void onProgressChanged(int joined);
-    }
 }

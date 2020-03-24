@@ -22,13 +22,18 @@ public class PrimaryController {
     @FXML
     private void viewFileSplitter() throws IOException {
         this.scene = new Scene(App.loadFXML("file_splitter"), 600, 120);
-        stage.setScene(scene);
-        stage.setTitle("File Splitter");
-        stage.show();
+        showStage("File Splitter");  // show File Splitter stage
     }
 
     @FXML
-    private void viewFileMerger() {
-        System.out.println("File Merger");
+    private void viewFileMerger() throws IOException {
+        this.scene = new Scene(App.loadFXML("file_merger"), 600, 120);
+        showStage("File Merger");  // show file Merger stage
+    }
+
+    private void showStage(String title) {
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.show();
     }
 }

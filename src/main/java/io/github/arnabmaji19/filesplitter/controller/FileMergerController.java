@@ -1,5 +1,7 @@
 package io.github.arnabmaji19.filesplitter.controller;
 
+import io.github.arnabmaji19.filesplitter.util.FileMerger;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -55,5 +57,39 @@ public class FileMergerController {
             errorAlert.showAndWait();
             return;
         }
+
+        // toggle screen controls
+        toggleScreenControls(true);
+
+        // create FileMerger instance
+        var fileMerger = new FileMerger(metaFile);
+        // add success listener to file merger
+        fileMerger.addOnSuccessListener(() -> {
+            // run UI changes on FXApplication Thread
+            Platform.runLater(() -> {
+                toggleScreenControls(false);  // toggle screen controls
+                // reset window
+                metaFile = null;
+                filePathTextField.setText("No File Chosen!");
+                // show a confirmation alert
+                Alert successAlert = new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+                successAlert.setHeaderText("Success!");
+                successAlert.getButtonTypes().setAll(ButtonType.OK);
+                successAlert.showAndWait();
+            });
+        });
+        // start FileMerger thread
+        fileMerger.start();
+    }
+
+    private void toggleScreenControls(boolean toggle) {
+        // disable active buttons
+        fileChooserButton.setDisable(toggle);
+        mergeButton.setDisable(toggle);
+        // show waiting related controls
+        progressBar.setVisible(toggle);
+        waitPromptText.setVisible(toggle);
     }
 }
